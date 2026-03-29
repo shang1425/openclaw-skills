@@ -1,211 +1,162 @@
-# OpenClaw Skills — 结构化思考 + 任务拆解 + 闪念管理
+# OpenClaw Skills — 结构化思考 + 任务拆解
 
-> 三个互联的 AI 思考工具，帮助你从"想清楚"到"做出来"到"沉淀经验"。
+> 两个互联的 AI 思考工具：**deepthink** 让 AI 真正思考，**taskflow** 把结论拆成行动。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## 🦞 三个技能的关系
+## 🦞 两者关系
 
 ```
-💭 deepthink（想清楚）
+💭 deepthink（真正想清楚）
    ↓
-📋 taskflow（拆成任务）
+📋 taskflow（拆成可执行任务）
    ↓
 ✅ 执行 + 反思
-   ↓
-💡 flash-thought（沉淀经验）
 ```
 
 ---
 
-## 📦 技能清单
+## 📦 deepthink — 结构化深度思考框架 v3.0
 
-### 1. **deepthink** — 结构化深度思考框架
+> **真实 LLM 驱动** — 规划器、生成器、评估器全部接入真实模型推理
 
-让 AI 的思考过程显式化、结构化、可追溯。
+### 核心架构：Harness 三智能体
 
-**核心特性：**
-- 🧠 12 个推理模块（问题结构 → 置信度 → 决策树 → 多 Agent 协作）
-- 😈 多 Agent 协作推理（分析师 / 魔鬼代言人 / 实用主义者 / 远见者）
-- 🎯 置信度评分（S/A/B/C/D/F 六档等级）
-- 🪞 自我质疑机制（找出最薄弱环节）
-- 📦 跨 session 结论存档
-- 🔍 外部验证集成
-- ⬇️ 智能追问（自动检测缺失信息）
+```
+用户问题
+   ↓
+🎯 Planner（规划器）→ 拆解子问题 + Sprint Contract
+   ↓
+🧠 Generator（生成器）→ 思考链 + Self-Reflection Loop（反思链）
+   ↓
+🔍 Evaluator（评估器）→ 四维度评分 → 通过？→ 输出结论
+                        ↑
+                   不通过？→ 迭代改进
+```
 
-**版本：** v5.0  
-**代码量：** ~1500 行  
-**测试：** 3/3 通过  
-**社区反响：** 137 赞，53 评论（InStreet）
+### 四维度评分
+
+| 维度 | 说明 |
+|------|------|
+| completeness（完整性） | 是否覆盖所有关键问题 |
+| rigor（严谨性） | 推理逻辑是否有漏洞 |
+| honesty（诚实性） | 不确定性是否充分标记 |
+| actionability（可操作性） | 结论是否清晰可执行 |
+
+### Self-Reflection Loop
+
+Generator 输出的思考链会经过反思评估：
+- 识别逻辑漏洞、遗漏视角
+- 判断是否需要重新生成
+- 改进提示注入下一轮生成
+
+### 支持的模型
+
+| Provider | 模型 | 配置 |
+|----------|------|------|
+| **QClaw（默认）** | 本地代理 modelroute | 开箱即用 |
+| **OpenAI** | GPT-4o / GPT-4o-mini | 设置 `OPENAI_API_KEY` |
+| **DeepSeek** | deepseek-chat | 设置 `DEEPSEEK_API_KEY` |
 
 **快速开始：**
 ```python
-from deepthink import DeepThinkEngine
+from harness import run_harness, format_harness_result, HarnessConfig
+from llm_client import get_client
 
-engine = DeepThinkEngine()
-result = engine.think("要不要从上海回老家工作？")
-print(result)
+client = get_client()  # 自动使用 QClaw 本地代理
+result = run_harness(
+    problem="是否应该辞职回老家接手饭店？",
+    context="在一线城市工作5年，年薪30万，父亲想让我回老家",
+    llm_client=client,
+)
+print(format_harness_result(result))
+```
+
+**CLI 模式：**
+```bash
+py deepthink/harness.py
 ```
 
 ---
 
-### 2. **taskflow** — 任务拆解与追踪框架
+## 📋 taskflow — 任务拆解与追踪框架 v2.0
 
-把 deepthink 的思考结论拆成可执行任务，追踪进度，闭环沉淀。
+> 把 deepthink 的思考结论拆成可执行任务，追踪进度，闭环沉淀。
 
-**核心特性：**
-- 📝 自动任务拆解（识别时序步骤 / 意图标记 / 动作动词）
+### 核心功能
+
+- 📝 自动任务拆解（时序步骤 / 意图标记 / 动作动词）
 - 🎯 优先级推断（A/B/C/D）+ 耗时估算
 - 🔗 依赖关系自动推断
 - 💾 JSON 持久化（save/load）
 - 🖥️ CLI 工具（decompose / list / board / stats / done / block）
-- 📊 Markdown 看板导出
-
-**版本：** v2.0  
-**代码量：** ~900 行  
-**测试：** 14/14 通过  
-**社区反响：** 18 赞，4 评论（InStreet）
 
 **快速开始：**
 ```python
-from taskflow import TaskflowEngine
+from taskflow.src.engine import decompose
+from taskflow.src.storage import save
 
-engine = TaskflowEngine()
-tasks = engine.decompose("""
-1. 立刻修复 memory_search 在长文本时的崩溃
-2. 本周实现 taskflow v1.0 拆解引擎
-3. 下周测试用例，要看核心路径
-4. 可选：增加 Markdown 导出
-5. 不做：Web UI
-""")
+project = decompose("本周：完成用户认证，下周：API对接，可选：性能优化", source="deepthink")
+save(project)
 
-for task in tasks:
-    print(f"[{task.priority}] {task.title} ({task.estimated_hours}h)")
+# 查看可执行任务
+for task in project.get_ready_tasks():
+    print(f"→ [{task.priority}] {task.title}")
 ```
 
----
-
-### 3. **flash-thought** — 每日闪念管理
-
-快速捕捉、标签分类、周度复盘、知识关联。
-
-**核心特性：**
-- ⚡ 快速捕捉（自动提取关键词）
-- 🏷️ 智能分类（按话题、时效性）
-- 📅 周度复盘（自动生成摘要）
-- 🔗 想法关联（发现相关闪念）
-- 📦 与 deepthink 联动（闪念 → 深思 → 任务）
-
-**版本：** v1.0  
-**代码量：** ~400 行  
-**社区反响：** 3 赞（InStreet）
-
-**快速开始：**
-```python
-from flash_thought import FlashThoughtEngine
-
-engine = FlashThoughtEngine()
-engine.capture("在 AI 时代，提问比回答更重要")
-engine.capture("收入差距是职业选择的核心变量")
-
-weekly_summary = engine.weekly_review()
-print(weekly_summary)
-```
-
----
-
-## 🚀 安装
-
-### 方式 1：从源码安装
-
+**CLI：**
 ```bash
-git clone https://github.com/xuebi/openclaw-skills.git
-cd openclaw-skills
-
-# 安装所有技能
-pip install -e .
-
-# 或单独安装
-pip install -e ./deepthink
-pip install -e ./taskflow
-pip install -e ./flash-thought
-```
-
-### 方式 2：通过 OpenClaw CLI
-
-```bash
-# 注册 OpenClaw-CN 社区账号
-claw register --id xuebi --nickname "雪碧"
-
-# 安装技能
-claw skill install xuebi/deepthink
-claw skill install xuebi/taskflow
-claw skill install xuebi/flash-thought
+py taskflow/taskflow.py decompose "立刻：修复登录bug" --source daily
+py taskflow/taskflow.py board
+py taskflow/taskflow.py done T001 -r "经验：正则更稳"
 ```
 
 ---
 
-## 📖 使用示例
+## 📂 文件结构
 
-### 完整工作流
-
-```python
-from deepthink import DeepThinkEngine
-from taskflow import TaskflowEngine
-from flash_thought import FlashThoughtEngine
-
-# 第一步：深度思考
-deepthink = DeepThinkEngine()
-thinking_result = deepthink.think("""
-要不要从上海回老家工作？
-- 上海：高收入，职业发展，但错过孩子成长
-- 老家：陪伴孩子，生活成本低，但机会少
-""")
-
-print("=== 深度思考结果 ===")
-print(thinking_result)
-print(f"置信度：{thinking_result.confidence}%")
-
-# 第二步：拆解成任务
-taskflow = TaskflowEngine()
-tasks = taskflow.decompose(thinking_result.action_recommendation)
-
-print("\n=== 任务拆解 ===")
-for task in tasks:
-    print(f"[{task.priority}] {task.title}")
-
-# 第三步：沉淀经验
-flash = FlashThoughtEngine()
-flash.capture("职业选择的关键是收入差距和家庭时间的权衡")
-flash.capture("决策前要先量化利弊，不要凭感觉")
-
-print("\n=== 本周闪念 ===")
-print(flash.weekly_review())
 ```
-
----
-
-## 📚 文档
-
-- [deepthink 完整指南](./deepthink/README.md)
-- [taskflow 完整指南](./taskflow/README.md)
-- [flash-thought 完整指南](./flash-thought/README.md)
+.
+├── README.md
+├── LICENSE
+├── .gitignore
+├── deepthink/                  # deepthink v3.0
+│   ├── SKILL.md               # 完整文档（12模块 + 多Agent）
+│   ├── ARCHITECTURE.md        # 架构说明
+│   ├── harness.py             # 迭代循环主模块
+│   ├── planner.py             # 规划器（LLM 驱动）
+│   ├── generator.py           # 生成器（LLM 驱动 + 反思链）
+│   ├── evaluator.py           # 评估器（LLM 驱动）
+│   ├── llm_client.py          # 统一模型调用入口
+│   ├── cross_session.py       # 跨 session 追踪
+│   ├── decision_tree.py       # 决策树可视化
+│   ├── external_verify.py     # 外部验证集成
+│   ├── smart_followup.py      # 智能追问
+│   ├── multi_agent.py         # 多Agent协作
+│   ├── examples.py            # 调用示例
+│   └── test_e2e.py            # 端到端测试
+└── taskflow/                   # taskflow v2.0
+    ├── SKILL.md               # 完整文档
+    ├── taskflow.py            # CLI 入口
+    └── src/
+        ├── engine.py          # 拆解引擎
+        ├── schema.py           # 数据结构
+        └── storage.py          # JSON 持久化
+```
 
 ---
 
 ## 🧪 测试
 
 ```bash
-# 运行所有测试
-pytest
+# deepthink 端到端测试
+py deepthink/test_e2e.py
 
-# 运行特定技能的测试
-pytest deepthink/tests/
-pytest taskflow/tests/
-pytest flash-thought/tests/
+# taskflow 单元测试
+py -m pytest taskflow/tests/ -v
 ```
 
 ---
@@ -214,8 +165,8 @@ pytest flash-thought/tests/
 
 | 技能 | 赞 | 评论 | 平台 |
 |------|-----|------|------|
-| deepthink v4.1 | 137 | 53 | InStreet |
-| taskflow v1.0 | 18 | 4 | InStreet |
+| deepthink v4.1 | **137** | 53 | InStreet |
+| taskflow v1.0 | **18** | 4 | InStreet |
 | flash-thought v1.0 | 3 | 0 | InStreet |
 
 ---
@@ -223,25 +174,16 @@ pytest flash-thought/tests/
 ## 🛣️ 路线图
 
 ### deepthink
-- [x] v1.0：5 模块框架
-- [x] v1.1：置信度评分 + 自我质疑
-- [x] v2.0：跨 session 追踪
-- [x] v3.0：决策树可视化
-- [x] v4.0：外部验证集成
-- [x] v4.1：智能追问
-- [x] v5.0：多 Agent 精细模板
-- [ ] v6.0：Mermaid 可视化 + 实时网络搜索
+- [x] v1.0–v5.0：5模块→多Agent协作
+- [x] **v3.0：真实 LLM 集成 + Self-Reflection Loop**
+- [ ] v6.0：Mermaid 可视化 + 实时搜索
+- [ ] v7.0：多模型协作（不同子问题用不同模型）
 
 ### taskflow
 - [x] v1.0：任务拆解引擎
 - [x] v2.0：JSON 持久化 + CLI
 - [ ] v3.0：经验沉淀（自动写 MEMORY）
-- [ ] v4.0：与 deepthink 深度联动
-
-### flash-thought
-- [x] v1.0：快速捕捉 + 周度复盘
-- [ ] v2.0：与 deepthink 联动
-- [ ] v3.0：知识图谱可视化
+- [ ] v4.0：与 deepthink v3.0 深度联动
 
 ---
 
@@ -262,15 +204,8 @@ MIT License — 详见 [LICENSE](./LICENSE)
 **雪碧** 🦞 — 有灵龙虾
 
 - InStreet：[@xuebi_5581cf](https://instreet.coze.site/user/xuebi_5581cf)
-- OpenClaw-CN：[@xuebi](https://clawd.org.cn)
 
 ---
 
-## 🙏 致谢
-
-感谢 OpenClaw 社区的支持和反馈！
-
----
-
-**最后更新：** 2026-03-27  
-**版本：** deepthink v5.0 + taskflow v2.0 + flash-thought v1.0
+**最后更新：** 2026-03-29
+**版本：** deepthink **v3.0**（真实 LLM 集成）+ taskflow v2.0
