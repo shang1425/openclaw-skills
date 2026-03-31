@@ -1,0 +1,161 @@
+{
+  "timestamp": "2026-03-31T09:52:06.671179",
+  "thinking_text": "\n    根据最新研究表明，全球气温在过去十年上升了1.5度。\n    这意味着气候变化正在加速。\n    我认为我们需要采取更积极的行动。\n    数据显示，2023年的碳排放量增长了5%。\n    因此，可以推断出环保政策的效果还不够明显。\n    ",
+  "total_claims": 5,
+  "verified_claims": 2,
+  "partially_verified_claims": 2,
+  "unverifiable_claims": 1,
+  "refuted_claims": 0,
+  "claims": [
+    {
+      "text": "根据最新研究表明，全球气温在过去十年上升了1",
+      "type": "fact",
+      "confidence": 0.7,
+      "context": "根据最新研究表明，全球气温在过去十年上升了1.5度。",
+      "line_number": 2,
+      "needs_verification": true
+    },
+    {
+      "text": "这意味着气候变化正在加速",
+      "type": "inference",
+      "confidence": 0.6,
+      "context": "这意味着气候变化正在加速。",
+      "line_number": 3,
+      "needs_verification": true
+    },
+    {
+      "text": "我认为我们需要采取更积极的行动",
+      "type": "opinion",
+      "confidence": 0.4,
+      "context": "我认为我们需要采取更积极的行动。",
+      "line_number": 4,
+      "needs_verification": false
+    },
+    {
+      "text": "数据显示，2023年的碳排放量增长了5%",
+      "type": "data",
+      "confidence": 0.8,
+      "context": "数据显示，2023年的碳排放量增长了5%。",
+      "line_number": 5,
+      "needs_verification": true
+    },
+    {
+      "text": "因此，可以推断出环保政策的效果还不够明显",
+      "type": "inference",
+      "confidence": 0.6,
+      "context": "因此，可以推断出环保政策的效果还不够明显。",
+      "line_number": 6,
+      "needs_verification": true
+    }
+  ],
+  "verification_results": [
+    {
+      "claim": "根据最新研究表明，全球气温在过去十年上升了1",
+      "status": "verified",
+      "confidence_before": 0.7,
+      "confidence_after": 0.84,
+      "supporting_evidence": [
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明根据最新研究表明，全球气温在过去十年上升了1...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        },
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明根据最新研究表明，全球气温在过去十年上升了1 验证...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        },
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明根据最新研究表明，全球气温在过去十年上升了1 真的吗...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        }
+      ],
+      "opposing_evidence": [],
+      "summary": "✅ 已验证\n支持证据: 3 条\n",
+      "search_queries": [
+        "根据最新研究表明，全球气温在过去十年上升了1",
+        "根据最新研究表明，全球气温在过去十年上升了1 验证",
+        "根据最新研究表明，全球气温在过去十年上升了1 真的吗"
+      ]
+    },
+    {
+      "claim": "这意味着气候变化正在加速",
+      "status": "partially_verified",
+      "confidence_before": 0.6,
+      "confidence_after": 0.672,
+      "supporting_evidence": [
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明这意味着气候变化正在加速...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        }
+      ],
+      "opposing_evidence": [],
+      "summary": "⚠️ 部分验证\n支持证据: 1 条\n",
+      "search_queries": [
+        "这意味着气候变化正在加速"
+      ]
+    },
+    {
+      "claim": "我认为我们需要采取更积极的行动",
+      "status": "unverifiable",
+      "confidence_before": 0.4,
+      "confidence_after": 0.4,
+      "supporting_evidence": [],
+      "opposing_evidence": [],
+      "summary": "声明不需要验证",
+      "search_queries": []
+    },
+    {
+      "claim": "数据显示，2023年的碳排放量增长了5%",
+      "status": "verified",
+      "confidence_before": 0.8,
+      "confidence_after": 0.95,
+      "supporting_evidence": [
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明数据显示，2023年的碳排放量增长了5%...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        },
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明数据显示 2023...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 0.8421052631578947,
+          "credibility": 0.6
+        }
+      ],
+      "opposing_evidence": [],
+      "summary": "✅ 已验证\n支持证据: 2 条\n",
+      "search_queries": [
+        "数据显示，2023年的碳排放量增长了5%",
+        "数据显示 2023"
+      ]
+    },
+    {
+      "claim": "因此，可以推断出环保政策的效果还不够明显",
+      "status": "partially_verified",
+      "confidence_before": 0.6,
+      "confidence_after": 0.672,
+      "supporting_evidence": [
+        {
+          "source": "https://example.com/research",
+          "snippet": "研究表明因此，可以推断出环保政策的效果还不够明显...这个说法有一定道理，但需要更多证据支持。",
+          "relevance": 1.0,
+          "credibility": 0.6
+        }
+      ],
+      "opposing_evidence": [],
+      "summary": "⚠️ 部分验证\n支持证据: 1 条\n",
+      "search_queries": [
+        "因此，可以推断出环保政策的效果还不够明显"
+      ]
+    }
+  ],
+  "summary": "\ndeepthink v6.0 验证报告总结\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📊 统计数据\n  • 总声明数: 5\n  • ✅ 已验证: 2 (40.0%)\n  • ⚠️ 部分验证: 2 (40.0%)\n  • ❓ 无法验证: 1 (20.0%)\n  • ❌ 已反驳: 0 (0.0%)\n\n🎯 可信度评估\n  • 高可信度 (已验证): 40.0%\n  • 低可信度 (已反驳): 0.0%\n  • 需要进一步审查: 60.0%\n\n💡 建议\n  • 优先审查已反驳的声明\n  • 对部分验证的声明进行深入研究\n  • 对无法验证的声明补充更多信息来源\n"
+}
